@@ -6,6 +6,8 @@ from primitive_db.core import create_table, drop_table, insert, select, update, 
 from primitive_db.utils import load_metadata, save_metadata, load_table_data, save_table_data
 from primitive_db.parser import parse_condition
 
+from primitive_db.decorators import create_cacher
+
 DB_FILE = "db_meta.json"
 
 
@@ -29,6 +31,8 @@ def print_help():
 def run():
     print("***База данных***")
     print_help()
+
+    cache = create_cacher()
 
     while True:
         user_input = prompt.string("Введите команду: ")
@@ -125,7 +129,9 @@ def run():
                 where_str = " ".join(args[where_idx+1:])
                 where_clause = parse_condition(where_str)
                 
-            results = select(table_data, where_clause)
+            # Кэшируем по имени таблицы и условию
+            cache_key = f"{table_name}_{where_clause}"
+            results = cache(cache_key, lambda: select(table_data, where_clause))
             
             if not results:
                 print("Записей не найдено.")
