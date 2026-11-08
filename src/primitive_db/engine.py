@@ -46,7 +46,10 @@ def run():
     cache = create_cacher()
 
     while True:
-        user_input = prompt.string("Введите команду: ")
+        try:
+            user_input = prompt.string("Введите команду: ")
+        except EOFError:
+            break # Если нажали Ctrl + D, просто выходим из цикла
         
         if not user_input.strip():
             continue
@@ -94,10 +97,10 @@ def run():
             if len(args) < 2:
                 continue
             metadata = load_metadata(META_FILE)
-            result = drop_table(metadata, args[1])
-            print(result)
-            if "Ошибка" not in result:
-                save_metadata(META_FILE, metadata)
+            result_data, message = drop_table(metadata, args[1])
+            print(message)
+            if "Ошибка" not in message and "отмена" not in message:
+                save_metadata(META_FILE, result_data)
 
         elif command == "insert":
             # insert into users values (Sergei 28 true)
@@ -201,7 +204,12 @@ def run():
             where_idx = args.index("where")
             where_str = " ".join(args[where_idx+1:])
             where_clause = parse_condition(where_str)
-            
+
+            result_data, message = delete(table_data, where_clause)
+            print(message)
+            if "Ошибка" not in message and "отменена" not in message:
+                save_table_data(table_name, result_data)
+
             table_data, result = delete(table_data, where_clause)
             print(result)
             if "Ошибка" not in result and result != "Удалено записей: 0":
