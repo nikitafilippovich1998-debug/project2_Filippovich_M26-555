@@ -1,4 +1,5 @@
-from primitive_db.decorators import handle_db_errors, confirm_action, log_time
+from primitive_db.decorators import confirm_action, handle_db_errors, log_time
+
 
 @handle_db_errors
 def create_table(metadata, table_name, columns_list):

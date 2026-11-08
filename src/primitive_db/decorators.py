@@ -32,7 +32,8 @@ def confirm_action(action_name):
             answer = input(f'Вы уверены, что хотите выполнить "{action_name}"? [y/n]: ')
             if answer.lower() != 'y':
                 print("Операция отменена.")
-                # Возвращаем первый аргумент (метаданные или данные таблицы) без изменений, чтобы программа не упала
+                # Возвращаем первый аргумент (метаданные или данные таблицы) 
+                # без изменений,чтобы программа не упала
                 return args[0], "Операция отменена."
             return func(*args, **kwargs)
         return wrapper
@@ -46,7 +47,11 @@ def log_time(func):
         start_time = time.monotonic()
         result = func(*args, **kwargs)
         end_time = time.monotonic()
-        print(f"Функция {func.__name__} выполнилась за {end_time - start_time:.3f} секунд.")
+        execution_time = end_time - start_time
+        print(
+            f"Функция {func.__name__} выполнилась за "
+            f"{execution_time:.3f} секунд."
+        )
         return result
     return wrapper
 

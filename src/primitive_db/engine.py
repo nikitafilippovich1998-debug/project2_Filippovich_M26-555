@@ -1,24 +1,35 @@
 import shlex
+
 import prompt
 from prettytable import PrettyTable
 
-from primitive_db.core import create_table, drop_table, insert, select, update, delete
-from primitive_db.utils import load_metadata, save_metadata, load_table_data, save_table_data
-from primitive_db.parser import parse_condition
-
+from primitive_db.constants import META_FILE
+from primitive_db.core import create_table, delete, drop_table, insert, select, update
 from primitive_db.decorators import create_cacher
-
-DB_FILE = "db_meta.json"
+from primitive_db.parser import parse_condition
+from primitive_db.utils import (
+    load_metadata,
+    load_table_data,
+    save_metadata,
+    save_table_data,
+)
 
 
 def print_help():
     print("\n***Операции с данными***")
     print("Функции:")
-    print("<command> insert into <имя_таблицы> values (<значение1>, <значение2>, ...) - создать запись.")
-    print("<command> select from <имя_таблицы> where <столбец> = <значение> - прочитать записи по условию.")
+    print(
+        "<command> insert into <имя_таблицы>"
+        "values (<значение1>, <значение2>, ...) "
+        "- создать запись."
+        )
+    print("<command> select from <имя_таблицы> where"
+    " <столбец> = <значение> - прочитать записи по условию.")
     print("<command> select from <имя_таблицы> - прочитать все записи.")
-    print("<command> update <имя_таблицы> set <столбец1> = <новое_значение1> where <столбец_условия> = <значение_условия> - обновить запись.")
-    print("<command> delete from <имя_таблицы> where <столбец> = <значение> - удалить запись.")
+    print("<command> update <имя_таблицы> set <столбец1> = <новое_значение1> where"
+    " <столбец_условия> = <значение_условия> - обновить запись.")
+    print("<command> delete from <имя_таблицы> " \
+    "where <столбец> = <значение> - удалить запись.")
     print("<command> info <имя_таблицы> - вывести информацию о таблице.")
     print("\nОбщие команды:")
     print("<command> create_table <имя_таблицы> <столбец1:тип> .. - создать таблицу")
@@ -62,7 +73,7 @@ def run():
             print_help()
 
         elif command == "list_tables":
-            metadata = load_metadata(DB_FILE)
+            metadata = load_metadata(META_FILE)
             if not metadata:
                 print("Таблиц нет.")
             else:
@@ -73,29 +84,30 @@ def run():
             if len(args) < 3:
                 print("Ошибка: Недостаточно аргументов.")
                 continue
-            metadata = load_metadata(DB_FILE)
+            metadata = load_metadata(META_FILE)
             result = create_table(metadata, args[1], args[2:])
             print(result)
             if "Ошибка" not in result:
-                save_metadata(DB_FILE, metadata)
+                save_metadata(META_FILE, metadata)
 
         elif command == "drop_table":
             if len(args) < 2:
                 continue
-            metadata = load_metadata(DB_FILE)
+            metadata = load_metadata(META_FILE)
             result = drop_table(metadata, args[1])
             print(result)
             if "Ошибка" not in result:
-                save_metadata(DB_FILE, metadata)
+                save_metadata(META_FILE, metadata)
 
         elif command == "insert":
             # insert into users values (Sergei 28 true)
             if len(args) < 5 or args[1] != "into" or args[3] != "values":
-                print("Ошибка: Неверный синтаксис. Используйте: insert into <table> values (val1, val2)")
+                print("Ошибка: Неверный синтаксис. " \
+                "Используйте: insert into <table> values (val1, val2)")
                 continue
                 
             table_name = args[2]
-            metadata = load_metadata(DB_FILE)
+            metadata = load_metadata(META_FILE)
             
             if table_name not in metadata:
                 print(f"Ошибка: Таблица '{table_name}' не существует.")
@@ -116,7 +128,7 @@ def run():
                 continue
             
             table_name = args[2]
-            metadata = load_metadata(DB_FILE)
+            metadata = load_metadata(META_FILE)
             if table_name not in metadata:
                 print(f"Ошибка: Таблица '{table_name}' не существует.")
                 continue
@@ -149,7 +161,7 @@ def run():
                 continue
                 
             table_name = args[1]
-            metadata = load_metadata(DB_FILE)
+            metadata = load_metadata(META_FILE)
             if table_name not in metadata:
                 print(f"Ошибка: Таблица '{table_name}' не существует.")
                 continue
@@ -175,7 +187,7 @@ def run():
                 continue
                 
             table_name = args[2]
-            metadata = load_metadata(DB_FILE)
+            metadata = load_metadata(META_FILE)
             if table_name not in metadata:
                 print(f"Ошибка: Таблица '{table_name}' не существует.")
                 continue

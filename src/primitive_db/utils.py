@@ -1,4 +1,6 @@
 import json
+import os
+
 
 def load_metadata(filepath):
     """Загружает данные из JSON-файла. Если файла нет, возвращает пустой словарь."""
@@ -14,8 +16,6 @@ def save_metadata(filepath, data):
     with open(filepath, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
 
-
-import os
 
 DATA_DIR = "data"
 
