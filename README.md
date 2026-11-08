@@ -6,4 +6,4 @@
 uv run database
 
 ## Демонстрация работы
-[Смотреть запись работы базы данных на Asciinema](https://asciinema.org/a/lH0qiRMyEiT6Zq1l)
+Запись работы базы данных доступна в файле 'asciinema.cast' в корне проекта.
