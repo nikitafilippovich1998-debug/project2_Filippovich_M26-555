@@ -1,3 +1,5 @@
+import prompt
+
 def welcome():
     print("Первая попытка запустить проект!")
     print("***")
@@ -5,7 +7,7 @@ def welcome():
     while True:
         print("<command> exit — выйти из программы")
         print("<command> help — справочная информация")
-        command = input("Введите команду: ")
+        command = prompt.string("Введите команду: ")
         
         if command == "exit":
             break
